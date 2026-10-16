@@ -53,7 +53,7 @@ function parseJson(raw: string): unknown {
 }
 
 // Overloaded (503/429) → retry on fallback models; record which one answered.
-const FALLBACKS = (process.env.LLM_FALLBACK_MODELS || "gemini-3.5-flash,gemini-3.8-flash,gemini-flash-latest").split(",").map((x) => x.trim()).filter(Boolean);
+const FALLBACKS = (process.env.LLM_FALLBACK_MODELS || "gemma-4-26b-a4b-it,gemma-4-31b-it").split(",").map((x) => x.trim()).filter(Boolean);
 
 async function sample(spec: ModelSpec, input: ReturnType<typeof modelInput>): Promise<unknown> {
   const chain = spec.name.startsWith("adapted") ? [spec.model] : [spec.model, ...FALLBACKS.filter((m) => m !== spec.model)];
@@ -71,11 +71,11 @@ async function sampleOnce(spec: ModelSpec, input: ReturnType<typeof modelInput>)
     const res = await fetch(`${spec.base.replace(/\/$/, "")}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${spec.key}` },
-      signal: AbortSignal.timeout(45000),
+      signal: AbortSignal.timeout(Number(process.env.LLM_TIMEOUT_MS) || 60000),
       body: JSON.stringify({
         model: spec.model,
         temperature: 0.7,
-        ...(spec.base.includes("googleapis") ? { reasoning_effort: process.env.LLM_REASONING || "low" } : {}),
+        ...(spec.model.startsWith("gemini") ? { reasoning_effort: process.env.LLM_REASONING || "low" } : {}),
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: SYSTEM },
@@ -97,7 +97,7 @@ async function sampleOnce(spec: ModelSpec, input: ReturnType<typeof modelInput>)
   }
 }
 
-export type VerifyResult = { decision: Decision; rules: RuleResult[]; model: string; samples: number; validQuoteRate: number | null; latencyMs: number };
+export type VerifyResult = { decision: Decision; rules: RuleResult[]; model: string; samples: number; validQuoteRate: number | null; latencyMs: number; sampleIssues?: string[] };
 
 /** model: undefined = default LLM, null = rules-only baseline, string = named model / "adapted" */
 export async function verifyCase(brief: Brief, proof: ProofItem[], reusedUrls: Set<string>, model?: string | null): Promise<VerifyResult> {
@@ -112,13 +112,19 @@ export async function verifyCase(brief: Brief, proof: ProofItem[], reusedUrls: S
   const samples = spec && !ruleFailed ? await Promise.all(Array.from({ length: n }, () => sample(spec, modelInput(brief, proof, rules)))) : [];
 
   let quotes = 0, good = 0;
+  const sampleIssues: string[] = [];
   for (const s of samples) {
     const p = ModelOutput.safeParse(s);
-    if (!p.success) continue;
+    if (!p.success) {
+      sampleIssues.push((s as { _error?: string })._error ?? p.error.issues.slice(0, 3).map((i) => `${i.path.join(".")}: ${i.message}`).join("; "));
+      continue;
+    }
+    const bq = badQuotes(p.data, proof);
+    if (bq.length) sampleIssues.push(`bad quotes: ${bq.join(" | ")}`);
     const q = p.data.criteria.filter((c) => c.quote).length;
     quotes += q;
     good += q - badQuotes(p.data, proof).length;
   }
   const decision = decide({ brief, proof, rules, samples: ruleFailed ? [{}] : samples });
-  return { decision, rules, model: spec?.name ?? "unavailable", samples: samples.length, validQuoteRate: quotes ? good / quotes : null, latencyMs: Date.now() - t0 };
+  return { decision, rules, model: spec?.name ?? "unavailable", samples: samples.length, validQuoteRate: quotes ? good / quotes : null, latencyMs: Date.now() - t0, sampleIssues };
 }

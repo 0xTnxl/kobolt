@@ -167,9 +167,9 @@ export const Criterion = z
     id: CriterionId,
     postIndex: z.number().int().min(0),
     status: z.enum(["pass", "fail", "unclear"]),
-    quote: z.string().max(300).nullable(),
-    source: z.enum(["caption", "comment"]).nullable(),
-    rationale: z.string().max(240),
+    quote: z.string().max(300).nullable().default(null),
+    source: z.enum(["caption", "comment"]).nullable().default(null),
+    rationale: z.string().transform((s) => s.slice(0, 240)).default(""),
   })
   .superRefine((c, ctx) => {
     const needsQuote = c.status === "fail" || (c.status === "pass" && c.id === "DISCLOSURE_GENUINE");
@@ -179,7 +179,7 @@ export const Criterion = z
 export const ModelOutput = z.object({
   criteria: z.array(Criterion).min(1),
   injectionDetected: z.boolean(),
-  injectionQuote: z.string().nullable(),
+  injectionQuote: z.string().nullable().default(null),
   verdict: Verdict,
 });
 export type ModelOutput = z.infer<typeof ModelOutput>;

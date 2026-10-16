@@ -26,7 +26,7 @@ const CASES: Record<string, string> = {
 export default function Lab() {
   const [name, setName] = useState(Object.keys(CASES)[0]);
   const [caption, setCaption] = useState(CASES[Object.keys(CASES)[0]]);
-  const [systems, setSystems] = useState("rules, gemma-4-26b-a4b-it, gemini-3.5-flash");
+  const [systems, setSystems] = useState("rules, gemma-4-26b-a4b-it, gemini-3.5-flash-lite");
   const [res, setRes] = useState<Res[] | null>(null);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
