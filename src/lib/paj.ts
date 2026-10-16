@@ -56,7 +56,8 @@ async function call<T>(method: string, path: string, opts: { token?: string; bod
       break;
     }
   }
-  const sessionDead = /session|unauthori|expired|token/i.test(last);
+  // Only treat as a dead session on auth-ish errors, not on any message containing a path like /session/...
+  const sessionDead = !/bad response \(404\)/.test(last) && /unauthori|expired|invalid token|session is invalid|\(401\)|\(403\)/i.test(last);
   throw new AppError(
     sessionDead ? "PAJ_SESSION_INVALID" : "PAJ_ERROR",
     last,
