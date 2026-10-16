@@ -29,24 +29,24 @@ export default function Ops() {
     <>
       <Nav />
       <main className="mx-auto max-w-4xl space-y-6 px-6 py-8">
-        <h1 className="text-2xl font-black">Ops</h1>
-        {msg && <p className="break-all rounded-lg bg-white/5 p-3 font-mono text-xs text-slate-300">{msg}</p>}
+        <h1 className="text-2xl font-semibold">Ops</h1>
+        {msg && <p className="break-all rounded-lg bg-gray-100 p-3 font-mono text-xs text-gray-700">{msg}</p>}
 
         <Card title="Demo data">
-          <p className="mb-3 text-sm text-slate-400">{s?.brands.length ?? 0} brand(s), {s?.creators.length ?? 0} creator(s) · mode <b>{s?.mode}</b></p>
+          <p className="mb-3 text-sm text-gray-500">{s?.brands.length ?? 0} brand(s), {s?.creators.length ?? 0} creator(s) · mode <b>{s?.mode}</b></p>
           <Btn onClick={() => run("Seed", () => api("/api/ops/seed", { body: {} }))}>Seed GlowSkin + Amaka</Btn>
         </Card>
 
         <Card title="Fee wallet + agent key (Solana mainnet)">
           {s?.treasury.address ? (
             <p className="space-y-1 text-sm">
-              Fee wallet (fund with ~0.05 SOL): <a className="text-emerald-400" target="_blank" rel="noreferrer" href={`https://solscan.io/account/${s.treasury.address}`}>{s.treasury.address}</a> · {s.treasury.sol?.toFixed(4)} SOL
-              <br />Agent delegate: <a className="text-emerald-400" target="_blank" rel="noreferrer" href={`https://solscan.io/account/${s.treasury.agent}`}>{s.treasury.agent}</a>
+              Fee wallet (fund with ~0.05 SOL): <a className="text-emerald-700" target="_blank" rel="noreferrer" href={`https://solscan.io/account/${s.treasury.address}`}>{s.treasury.address}</a> · {s.treasury.sol?.toFixed(4)} SOL
+              <br />Agent delegate: <a className="text-emerald-700" target="_blank" rel="noreferrer" href={`https://solscan.io/account/${s.treasury.agent}`}>{s.treasury.agent}</a>
             </p>
-          ) : <p className="text-sm text-slate-500">{s?.treasury.error}</p>}
+          ) : <p className="text-sm text-gray-500">{s?.treasury.error}</p>}
         </Card>
 
-        <Card title="Paj session" right={<span className={s?.paj.connected ? "text-emerald-400" : "text-amber-300"}>{s?.paj.connected ? "connected" : "not connected"}</span>}>
+        <Card title="Paj session" right={<span className={s?.paj.connected ? "text-emerald-700" : "text-emerald-700"}>{s?.paj.connected ? "connected" : "not connected"}</span>}>
           <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
             <Input label="Paj account email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <Btn variant="ghost" onClick={() => run("OTP sent", () => api("/api/ops/paj-initiate", { body: { email } }))}>Send OTP</Btn>
@@ -57,18 +57,18 @@ export default function Ops() {
 
         <Card title="Payout / refund bank accounts (Paj name enquiry)">
           <div className="space-y-3">
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-gray-500">
               Creator: {s?.creators[0]?.accountName ? `${s.creators[0].accountName} · ${s.creators[0].bankName} · ${short(s.creators[0].accountNumber, 3)}` : "not set"}
               <br />Brand: {s?.brands[0]?.accountName ? `${s.brands[0].accountName} · ${s.brands[0].bankName}` : "not set"}
             </p>
             <div className="grid gap-3 sm:grid-cols-3">
-              <label className="text-xs text-slate-400">For
-                <select value={acct.kind} onChange={(e) => setAcct({ ...acct, kind: e.target.value })} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm">
+              <label className="text-xs text-gray-500">For
+                <select value={acct.kind} onChange={(e) => setAcct({ ...acct, kind: e.target.value })} className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
                   <option value="creator">Creator</option><option value="brand">Brand (refunds)</option>
                 </select>
               </label>
-              <label className="text-xs text-slate-400">Bank
-                <select value={acct.bankId} onChange={(e) => setAcct({ ...acct, bankId: e.target.value })} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm">
+              <label className="text-xs text-gray-500">Bank
+                <select value={acct.bankId} onChange={(e) => setAcct({ ...acct, bankId: e.target.value })} className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
                   <option value="">{banks.length ? "Select bank" : "Connect Paj first"}</option>
                   {banks.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
                 </select>

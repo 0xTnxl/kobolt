@@ -36,16 +36,16 @@ export default function Lab() {
       <Nav />
       <main className="mx-auto max-w-6xl space-y-6 px-6 py-8">
         <div>
-          <h1 className="text-2xl font-black">Verifier lab: rules vs base vs adapted</h1>
-          <p className="text-slate-400">Same brief, same hostile proof. Rules gate everything; the model only judges what code can&apos;t. Confidence = agreement across 5 samples, not self-reported.</p>
+          <h1 className="text-2xl font-semibold">Verifier lab: rules vs base vs adapted</h1>
+          <p className="text-gray-500">Same brief, same hostile proof. Rules gate everything; the model only judges what code can&apos;t. Confidence = agreement across 5 samples, not self-reported.</p>
         </div>
         <Card title="Case">
           <div className="flex flex-wrap gap-2">
-            {Object.keys(CASES).map((k) => <button key={k} onClick={() => { setName(k); setCaption(CASES[k]); setRes(null); }} className={`rounded-full px-3 py-1 text-sm ${k === name ? "bg-emerald-400 text-slate-950" : "bg-white/5"}`}>{k}</button>)}
+            {Object.keys(CASES).map((k) => <button key={k} onClick={() => { setName(k); setCaption(CASES[k]); setRes(null); }} className={`rounded-full px-3 py-1 text-sm ${k === name ? "bg-gray-900 text-white" : "bg-gray-100"}`}>{k}</button>)}
           </div>
-          <textarea rows={3} value={caption} onChange={(e) => setCaption(e.target.value)} className="mt-4 w-full rounded-lg border border-white/10 bg-slate-900 p-3 text-sm" />
-          <label className="mt-3 block text-xs text-slate-400">Systems (comma-separated: rules, any OpenAI-compatible model name, adapted)
-            <input value={systems} onChange={(e) => setSystems(e.target.value)} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm" />
+          <textarea rows={3} value={caption} onChange={(e) => setCaption(e.target.value)} className="mt-4 w-full rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm" />
+          <label className="mt-3 block text-xs text-gray-500">Systems (comma-separated: rules, any OpenAI-compatible model name, adapted)
+            <input value={systems} onChange={(e) => setSystems(e.target.value)} className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm" />
           </label>
           <div className="mt-3">
             <Btn disabled={busy} onClick={async () => {
@@ -54,18 +54,18 @@ export default function Lab() {
               setBusy(false);
             }}>{busy ? "Running…" : "Run comparison"}</Btn>
           </div>
-          {err && <p className="mt-3 text-sm text-rose-400">{err}</p>}
+          {err && <p className="mt-3 text-sm text-emerald-700">{err}</p>}
         </Card>
         {res && (
           <div className="grid gap-4 md:grid-cols-3">
             {res.map((r) => (
-              <Card key={r.system} title={r.system} right={<span className={`font-bold ${r.decision.autoRelease ? "text-emerald-400" : "text-orange-400"}`}>{r.decision.autoRelease ? "RELEASE" : "HOLD"}</span>}>
+              <Card key={r.system} title={r.system} right={<span className={`font-bold ${r.decision.autoRelease ? "text-emerald-700" : "text-emerald-700"}`}>{r.decision.autoRelease ? "RELEASE" : "HOLD"}</span>}>
                 <p className="text-sm font-semibold">{r.decision.verdict} · {(r.decision.confidence * 100).toFixed(0)}%</p>
-                <p className="mb-2 text-xs text-slate-500">{r.model} · {r.samples} samples · {r.latencyMs}ms</p>
+                <p className="mb-2 text-xs text-gray-500">{r.model} · {r.samples} samples · {r.latencyMs}ms</p>
                 {r.decision.reasons.map((x, i) => (
-                  <div key={i} className="mb-1 text-sm">• <span className="font-mono text-xs text-orange-300">{x.layer}:{x.id}</span> {x.detail}{x.quote && <span className="block pl-3 text-xs italic text-slate-400">&ldquo;{x.quote}&rdquo;</span>}</div>
+                  <div key={i} className="mb-1 text-sm">• <span className="font-mono text-xs text-emerald-700">{x.layer}:{x.id}</span> {x.detail}{x.quote && <span className="block pl-3 text-xs italic text-gray-500">&ldquo;{x.quote}&rdquo;</span>}</div>
                 ))}
-                {!r.decision.reasons.length && <p className="text-sm text-emerald-400">All checks passed.</p>}
+                {!r.decision.reasons.length && <p className="text-sm text-emerald-700">All checks passed.</p>}
               </Card>
             ))}
           </div>

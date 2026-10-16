@@ -72,7 +72,7 @@ export default function Home() {
   }
 
   const up = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
-  const sel = "mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm";
+  const sel = "mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm";
 
   return (
     <>
@@ -80,51 +80,51 @@ export default function Home() {
       <main className="mx-auto max-w-6xl space-y-6 px-6 py-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black tracking-tight">Pay creators the moment the work is verified.</h1>
-            <p className="mt-1 text-slate-400">Each deal gets its own USDC escrow account on Solana. An adapted AI agent, capped by an on-chain allowance, checks delivery against the brief and releases naira to the creator.</p>
+            <h1 className="text-3xl font-semibold tracking-tight">Pay creators the moment the work is verified.</h1>
+            <p className="mt-1 text-gray-500">Each deal gets its own USDC escrow account on Solana. An adapted AI agent, capped by an on-chain allowance, checks delivery against the brief and releases naira to the creator.</p>
           </div>
-          <span className={`rounded-full px-3 py-1 text-xs font-bold ${s?.mode === "live" ? "bg-emerald-400 text-slate-950" : "bg-amber-400/20 text-amber-300"}`}>
+          <span className={`rounded-full px-3 py-1 text-xs font-bold ${s?.mode === "live" ? "bg-gray-900 text-white" : "bg-amber-50 text-emerald-700"}`}>
             {s?.mode === "live" ? "LIVE · Solana mainnet + Paj" : "SANDBOX · mock rails"}
           </span>
         </div>
 
-        {err && <p className="rounded-lg bg-rose-500/10 p-3 text-sm text-rose-300">{err}</p>}
+        {err && <p className="rounded-lg bg-rose-50 p-3 text-sm text-emerald-700">{err}</p>}
 
         <div className="grid gap-4 md:grid-cols-3">
           <Card title="Held across deals">
             <p className="text-2xl font-bold">{(s?.ledgerHeldUsdc ?? 0).toFixed(2)} USDC</p>
-            <p className="text-xs text-slate-500">Each in its own on-chain account. Moves only on verified release or refund.</p>
+            <p className="text-xs text-gray-500">Each in its own on-chain account. Moves only on verified release or refund.</p>
           </Card>
           <Card title="Agent key (SPL delegate)">
             {s?.treasury?.agent ? (
               <>
-                <a className="text-sm text-emerald-400 hover:underline" target="_blank" rel="noreferrer" href={`https://solscan.io/account/${s.treasury.agent}`}>{short(s.treasury.agent)} ↗</a>
-                <p className="mt-1 text-xs text-slate-500">Can only move what each deal approved. Fee wallet: {(s.treasury.sol ?? 0).toFixed(4)} SOL</p>
+                <a className="text-sm text-emerald-700 hover:underline" target="_blank" rel="noreferrer" href={`https://solscan.io/account/${s.treasury.agent}`}>{short(s.treasury.agent)} ↗</a>
+                <p className="mt-1 text-xs text-gray-500">Can only move what each deal approved. Fee wallet: {(s.treasury.sol ?? 0).toFixed(4)} SOL</p>
               </>
             ) : (
-              <p className="text-sm text-slate-500">{s?.treasury?.error ?? "Loading…"}</p>
+              <p className="text-sm text-gray-500">{s?.treasury?.error ?? "Loading…"}</p>
             )}
           </Card>
           <Card title="Paj rails">
             <p className="text-2xl font-bold">{s?.paj.connected ? "Connected" : "Not connected"}</p>
-            <a href="/ops" className="text-xs text-emerald-400 hover:underline">{s?.paj.email ?? "Connect on Ops →"}</a>
+            <a href="/ops" className="text-xs text-emerald-700 hover:underline">{s?.paj.email ?? "Connect on Ops →"}</a>
           </Card>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-5">
           <Card title="New deal" className="lg:col-span-2">
             <div className="space-y-3">
-              <p className="text-xs text-slate-500">{s?.brands[0]?.name ?? "Brand"} → {s?.creators[0]?.name ?? "Creator"}</p>
+              <p className="text-xs text-gray-500">{s?.brands[0]?.name ?? "Brand"} → {s?.creators[0]?.name ?? "Creator"}</p>
               <Input label="Title" value={f.title} onChange={up("title")} />
               <div className="grid grid-cols-2 gap-3">
                 <Input label="Amount (₦)" type="number" value={f.amountNgn} onChange={up("amountNgn")} />
                 <Input label="Posts" type="number" value={f.count} onChange={up("count")} />
-                <label className="text-xs text-slate-400">Platform
+                <label className="text-xs text-gray-500">Platform
                   <select className={sel} value={f.platform} onChange={up("platform")}>
                     <option value="instagram">Instagram</option><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="x">X</option>
                   </select>
                 </label>
-                <label className="text-xs text-slate-400">Format
+                <label className="text-xs text-gray-500">Format
                   <select className={sel} value={f.format} onChange={up("format")}>
                     <option value="reel">Reel</option><option value="any">Any</option>
                   </select>
@@ -139,13 +139,13 @@ export default function Home() {
               <Input label="Banned claims" value={f.bannedClaims} onChange={up("bannedClaims")} />
               <Input label="Notes for the verifier" value={f.notes} onChange={up("notes")} />
               <Input label="Deadline" type="datetime-local" value={f.deadline} onChange={up("deadline")} />
-              <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/5 p-3">
-                <p className="mb-2 text-xs font-semibold text-emerald-300">Agent mandate: bounded authority</p>
+              <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+                <p className="mb-2 text-xs font-semibold text-emerald-700">Agent mandate: bounded authority</p>
                 <div className="grid grid-cols-2 gap-3">
                   <Input label="Auto-release cap (USDC)" type="number" value={f.maxAuto} onChange={up("maxAuto")} />
                   <Input label="Min agreement (0-1)" type="number" step="0.1" value={f.minConf} onChange={up("minConf")} />
                 </div>
-                <label className="mt-2 flex items-center gap-2 text-xs text-slate-300">
+                <label className="mt-2 flex items-center gap-2 text-xs text-gray-700">
                   <input type="checkbox" checked={f.requireFetched} onChange={(e) => setF({ ...f, requireFetched: e.target.checked })} /> Only auto-release fetched proof (not self-reported)
                 </label>
               </div>
@@ -154,14 +154,14 @@ export default function Home() {
           </Card>
 
           <Card title="Deals" className="lg:col-span-3">
-            {!s?.deals.length && <p className="text-sm text-slate-500">No deals yet.</p>}
-            <ul className="divide-y divide-white/5">
+            {!s?.deals.length && <p className="text-sm text-gray-500">No deals yet.</p>}
+            <ul className="divide-y divide-gray-100">
               {s?.deals.map((d) => (
                 <li key={d.id}>
-                  <a href={`/deals/${d.id}`} className="flex items-center justify-between gap-3 py-3 hover:bg-white/[0.02]">
+                  <a href={`/deals/${d.id}`} className="flex items-center justify-between gap-3 py-3 hover:bg-gray-50">
                     <div>
                       <p className="font-semibold">{d.title}</p>
-                      <p className="text-xs text-slate-500">{d.id} · {ngn(d.amountNgn)}{d.heldUsdcMicro ? ` · ${(d.heldUsdcMicro / 1e6).toFixed(2)} USDC` : ""}</p>
+                      <p className="text-xs text-gray-500">{d.id} · {ngn(d.amountNgn)}{d.heldUsdcMicro ? ` · ${(d.heldUsdcMicro / 1e6).toFixed(2)} USDC` : ""}</p>
                     </div>
                     <Status s={d.status} />
                   </a>

@@ -25,10 +25,10 @@ export const errText = (e: unknown) => {
 
 export function Card({ title, children, right, className = "" }: { title?: ReactNode; children: ReactNode; right?: ReactNode; className?: string }) {
   return (
-    <section className={`rounded-2xl border border-white/10 bg-white/[0.03] p-5 ${className}`}>
+    <section className={`rounded-xl border border-gray-200 bg-white shadow-sm p-5 ${className}`}>
       {(title || right) && (
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400">{title}</h2>
+          <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
           {right}
         </div>
       )}
@@ -39,9 +39,9 @@ export function Card({ title, children, right, className = "" }: { title?: React
 
 export function Btn({ children, onClick, disabled, variant = "primary", type = "button" }: { children: ReactNode; onClick?: () => void; disabled?: boolean; variant?: "primary" | "ghost" | "danger"; type?: "button" | "submit" }) {
   const v = {
-    primary: "bg-emerald-400 text-slate-950 hover:bg-emerald-300",
-    ghost: "border border-white/15 text-slate-200 hover:bg-white/5",
-    danger: "bg-rose-500/90 text-white hover:bg-rose-400",
+    primary: "bg-gray-900 text-white hover:bg-gray-700",
+    ghost: "border border-gray-300 bg-white text-gray-800 hover:bg-gray-50",
+    danger: "bg-rose-600 text-white hover:bg-rose-500",
   }[variant];
   return (
     <button type={type} onClick={onClick} disabled={disabled} className={`rounded-lg px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${v}`}>
@@ -53,29 +53,29 @@ export function Btn({ children, onClick, disabled, variant = "primary", type = "
 export function Input(props: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   const { label, ...rest } = props;
   return (
-    <label className="block text-xs text-slate-400">
+    <label className="block text-xs text-gray-500">
       {label}
-      <input {...rest} className="mt-1 w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-emerald-400" />
+      <input {...rest} className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-gray-900" />
     </label>
   );
 }
 
 const STATUS: Record<string, string> = {
-  awaiting_funding: "bg-amber-400/15 text-amber-300",
-  held: "bg-sky-400/15 text-sky-300",
-  verifying: "bg-violet-400/15 text-violet-300",
-  approved: "bg-emerald-400/15 text-emerald-300",
-  held_review: "bg-orange-500/20 text-orange-300",
-  releasing: "bg-emerald-400/15 text-emerald-300",
-  released: "bg-emerald-400/20 text-emerald-300",
-  settled: "bg-emerald-500/25 text-emerald-200",
-  refunding: "bg-slate-400/15 text-slate-300",
-  refunded: "bg-slate-400/20 text-slate-300",
-  cancelled: "bg-slate-500/20 text-slate-400",
-  failed: "bg-rose-500/20 text-rose-300",
+  awaiting_funding: "bg-amber-50 text-amber-700 ring-amber-200",
+  held: "bg-sky-50 text-sky-700 ring-sky-200",
+  verifying: "bg-violet-50 text-violet-700 ring-violet-200",
+  approved: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  held_review: "bg-orange-50 text-orange-700 ring-orange-200",
+  releasing: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  released: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  settled: "bg-emerald-600 text-white ring-emerald-600",
+  refunding: "bg-gray-100 text-gray-700 ring-gray-200",
+  refunded: "bg-gray-100 text-gray-700 ring-gray-200",
+  cancelled: "bg-gray-100 text-gray-500 ring-gray-200",
+  failed: "bg-rose-50 text-rose-700 ring-rose-200",
 };
 export function Status({ s }: { s: string }) {
-  return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS[s] ?? "bg-white/10"}`}>{s.replace("_", " ")}</span>;
+  return <span className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${STATUS[s] ?? "bg-gray-100"}`}>{s.replace("_", " ")}</span>;
 }
 
 export const ngn = (n: number) => `₦${Math.round(n).toLocaleString()}`;
@@ -84,16 +84,16 @@ export const txUrl = (sig?: string | null) => (sig && !sig.startsWith("mock") ? 
 
 export function Nav() {
   return (
-    <header className="border-b border-white/10 bg-slate-950/80 backdrop-blur">
+    <header className="border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="/" className="text-lg font-black tracking-tight">
-          <span className="text-emerald-400">⚡</span> Kobolt
+        <a href="/" className="text-lg font-semibold tracking-tight">
+          <span className="mr-1.5 inline-block h-3 w-3 rounded-sm bg-emerald-600 align-[-1px]" />Kobolt
         </a>
-        <nav className="flex gap-5 text-sm text-slate-400">
-          <a href="/" className="hover:text-white">Deals</a>
-          <a href="/lab" className="hover:text-white">Verifier lab</a>
-          <a href="/p/amaka_stories" className="hover:text-white">Portfolio</a>
-          <a href="/ops" className="hover:text-white">Ops</a>
+        <nav className="flex gap-5 text-sm text-gray-500">
+          <a href="/" className="hover:text-gray-900">Deals</a>
+          <a href="/lab" className="hover:text-gray-900">Verifier lab</a>
+          <a href="/p/amaka_stories" className="hover:text-gray-900">Portfolio</a>
+          <a href="/ops" className="hover:text-gray-900">Ops</a>
         </nav>
       </div>
     </header>
