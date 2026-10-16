@@ -1,7 +1,7 @@
 // Lean TS port of paj_client.rs
 import { AppError } from "./errors";
 
-const BASE = process.env.PAJ_SERVICE_URL || "https://paj-ramp-service-production-deb7.up.railway.app/";
+const BASE = (process.env.PAJ_SERVICE_URL || "https://paj-ramp-service-production-deb7.up.railway.app").trim().replace(/\/+$/, "");
 export const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
 export type PajBank = { id: string; name: string; code: string; country: string };
